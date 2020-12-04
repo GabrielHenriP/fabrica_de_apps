@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import firebase from './src/firebaseConfig';
-
 import TaskList from './src/TaskList'
 
 console.disableYellowBox=true
 
 export default App = () => {
-
+  const inputRef = useRef(null);
   const [newTask, setNewTask] = useState('')
   const [tasks, setTasks] = useState([])
+  const [edit, setEdit] = useState('')
 
   useEffect(() => {
 
@@ -37,6 +38,16 @@ export default App = () => {
   async function handleAdd(){
     if(newTask !== ''){
 
+      if(edit !== ''){
+        await firebase.database().ref('tarefas').child(edit).update({
+          nome: newTask,
+        })
+        Keyboard.dismiss()
+        setNewTask('');
+        setEdit('');
+        return
+      }
+
       let tarefas = await firebase.database().ref('tarefas')
       let chave = tarefas.push().key
 
@@ -50,8 +61,34 @@ export default App = () => {
     }
   };
 
+  async function handleDelete(key){
+    await firebase.database().ref('tarefas').child(key).remove()
+  }
+
+  async function handleEdit(data){
+    setNewTask(data.nome)
+    setEdit(data.key)
+    inputRef.current.focus()
+  }
+
+  function cancelEdit(){
+    setEdit('')
+    Keyboard.dismiss();
+    setNewTask('')
+  }
+
    return (
      <View style={styles.container}>
+
+     {edit.length > 0 && (
+       <View style={{flexDirection:"row", marginBottom:10}}>
+        <Text style={{color:'red', marginRight:10}}>Você está editando uma tarefa. Cancelar:</Text>
+        <TouchableOpacity onPress={cancelEdit}>
+            <Icon name='x-circle' size={23} color='red' />
+        </TouchableOpacity>
+      </View>
+     )}
+
       <View style={styles.containerTask}>
 
         <TextInput
@@ -60,6 +97,7 @@ export default App = () => {
           underlineColorAndroid="transparent"
           onChangeText={text => setNewTask(text)}
           value={newTask}
+          ref={inputRef}
         />
 
         <TouchableOpacity onPress={handleAdd} style={styles.buttonAdd}>
@@ -72,7 +110,7 @@ export default App = () => {
       data={tasks}
       keyExtractor={item => item.key}
       renderItem={({ item }) => (
-        <TaskList data={item} />
+        <TaskList data={item} deleteItem={handleDelete} editItem={handleEdit}/>
       )}
       />
 
