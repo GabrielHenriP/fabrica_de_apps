@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Platform, Text, View } from 'react-native';
+
 import { AuthContext } from '../../contexts/auth';
 
 
@@ -11,9 +12,12 @@ export default SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { user } = useContext(AuthContext);
-    console.log(user.nome)
-    console.log(user.uid)
+    const {signUp} = useContext(AuthContext);
+
+    function handleSignUp(){
+        signUp(email,password,nome)
+    }
+    
     return(
         <Background>
             <Container
@@ -32,7 +36,7 @@ export default SignIn = () => {
                 </AreaInput>
                 <AreaInput>
                     <Input 
-                    placeholder='Senha'
+                    placeholder='Email'
                     autpCorrect={false}
                     autoCapitalize='none'
                     value={email}
@@ -49,8 +53,8 @@ export default SignIn = () => {
                     />
                 </AreaInput>
 
-                <SubmitButton>
-                    <SubmitText>Cadastrarr</SubmitText>
+                <SubmitButton onPress={handleSignUp}>
+                    <SubmitText>Cadastrar</SubmitText>
                 </SubmitButton>
 
             </Container>

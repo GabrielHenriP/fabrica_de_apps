@@ -7,6 +7,8 @@ import firebase from './src/services/firebaseConnection';
 
 import Routes from './src/routes';
 
+console.disableYellowBox=true
+
 export default App = () => {
   return (
     <NavigationContainer>
