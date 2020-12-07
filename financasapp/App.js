@@ -9,6 +9,7 @@ import Routes from './src/routes';
 
 console.disableYellowBox=true
 
+
 export default App = () => {
   return (
     <NavigationContainer>

@@ -12,9 +12,11 @@ export default SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const { signIn } = useContext(AuthContext);
+
 
     function handleLogin(){
-        return
+        signIn(email,password);
     }
 
     return(
@@ -27,7 +29,7 @@ export default SignIn = () => {
 
                 <AreaInput>
                     <Input 
-                    placeholder='Password'
+                    placeholder='Email'
                     autpCorrect={false}
                     autoCapitalize='none'
                     value={email}
