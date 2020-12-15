@@ -3,20 +3,24 @@ import { Button, Text, View } from 'react-native';
 
 import { AuthContext } from '../../contexts/auth';
 
+import HeaderMenu from '../../components/Header';
+
+import { Container, Background, Nome, Saldo, Title} from './styles'
+
 export default Home = () => {
 
     const { user, signOut } = useContext(AuthContext);
 
     return(
-        <View>
-            <Text>Home</Text>
-            <Text>{user && user.name}</Text>
-            <Text>{user && user.email}</Text>
-            <Button 
-            title='Deslogar' 
-            onPress={signOut}
-            />
+        <Background>
+            <HeaderMenu/>
+            <Container>
+                <Nome>gab</Nome>
+                <Saldo>R$ 122</Saldo>
+            </Container>
+
+            <Title>Ultimas movimentações</Title>
             
-        </View>
+        </Background>
     )
 };
