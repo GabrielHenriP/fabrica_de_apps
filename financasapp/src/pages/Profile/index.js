@@ -3,6 +3,8 @@ import { useNavigation } from  '@react-navigation/native';
 
 import { AuthContext } from '../../contexts/auth';
 
+import HeaderMenu from '../../components/Header';
+
 import {Container, Nome, NewLink, NewText, Logout, LogoutText} from './styles';
 
 export default Profile = () => {
@@ -13,6 +15,7 @@ export default Profile = () => {
 
     return(
         <Container>
+            <HeaderMenu/>
             <Nome>
                 {user.name}
             </Nome>
