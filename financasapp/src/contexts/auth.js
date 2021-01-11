@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import firebase from '../services/firebaseConnection';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { set } from 'date-fns/esm';
 
 
 export const AuthContext = createContext({});
@@ -9,6 +10,7 @@ export default AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true)
+    const [loadingAuth, SetLoadingAuth] = useState(false);
 
     useEffect( () => {
         async function loadStorage(){
@@ -25,6 +27,7 @@ export default AuthProvider = ({ children }) => {
     }, [])
 
     async function signIn(email,password){
+        SetLoadingAuth(true);
         await firebase.auth().signInWithEmailAndPassword(email,password)
             .then( async value => {
                 let uid = value.user.uid;
@@ -37,14 +40,17 @@ export default AuthProvider = ({ children }) => {
                         };
                         setUser(data)
                         storageUser(data)
+                        SetLoadingAuth(false);
                     })
             })
             .catch( error => {
                 alert(error.code)
+                SetLoadingAuth(false)
             })
     }
 
     async function signUp(email, password, name){
+        SetLoadingAuth(true);
         await firebase.auth().createUserWithEmailAndPassword(email,password)
             .then(async value => {
                 let uid = value.user.uid;
@@ -59,10 +65,12 @@ export default AuthProvider = ({ children }) => {
                     }
                     setUser(data)
                     storageUser(data)
+                    SetLoadingAuth(false);
                 })
             })
             .catch( error => {
                 alert(error.code)
+                SetLoadingAuth(false);
             })
     }
 
@@ -79,7 +87,7 @@ export default AuthProvider = ({ children }) => {
     }
 
     return(
-        <AuthContext.Provider value={{ signed: !!user, user, signUp, signIn, signOut, loading }}>
+        <AuthContext.Provider value={{ signed: !!user, user, signUp, signIn, signOut, loading, loadingAuth }}>
             {children}
         </AuthContext.Provider>
     );
